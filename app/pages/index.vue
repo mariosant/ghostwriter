@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import { isEqual } from "radash";
+
 const { user } = useUserSession();
+
+const toast = useToast();
 
 const stravaLink = computed(() => {
   return `https://www.strava.com/athletes/${toValue(user).id}`;
@@ -15,22 +19,31 @@ const preferences = useState<FormData>("preferences", () => ({
   language: "English",
 }));
 
-const { status } = useLazyFetch("/api/preferences", {
+const { data: preferencesData, status } = useLazyFetch("/api/preferences", {
   onResponse({ error, response }) {
     if (error) {
       return;
     }
 
-    preferences.value = response._data;
+    preferences.value = { ...response._data };
   },
 });
 
-watchEffect(async () => {
+const onSavePreferences = async () => {
   await $fetch("/api/preferences", {
     method: "PUT",
     body: toValue(preferences),
   });
-});
+
+  toast.add({
+    title: "Saved",
+    description: "Preferences saved succesfully!",
+  });
+};
+
+const onResetPreferences = () => {
+  preferences.value = { ...preferencesData.value };
+};
 </script>
 
 <template>
@@ -79,6 +92,17 @@ watchEffect(async () => {
           </template>
         </CardField>
       </div>
+
+      <template #footer>
+        <div class="flex gap-4">
+          <UButton class="px-4" @click="onSavePreferences"
+            >Save preferences</UButton
+          >
+          <UButton variant="ghost" color="neutral" @click="onResetPreferences"
+            >Cancel</UButton
+          >
+        </div>
+      </template>
     </UCard>
   </UContainer>
 
