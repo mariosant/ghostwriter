@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1743665160397,
+      "tag": "0000_tearful_the_initiative",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1743691140050,
+      "tag": "0001_spooky_gravity",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1743691375389,
+      "tag": "0002_plain_shooting_star",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1743691967975,
+      "tag": "0003_perpetual_bill_hollister",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1743776869050,
+      "tag": "0004_cultured_doctor_strange",
+      "breakpoints": true
+    }
+  ]
+}
