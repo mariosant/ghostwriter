@@ -4,8 +4,9 @@
   >
     <div class="text-center">
       Built with 💪 in Athens, Greece 🇬🇷 by Marios Antonoudiou.
-      <ULink class="underline">Send feedback</ULink> or
-      <ULink class="underline">buy me a coffee</ULink>.
+      <ULink class="underline" href="mailto:mariosant@sent.com"
+        >Send feedback</ULink
+      >.
     </div>
     <NuxtImg src="/images/powered-by-strava.svg" width="80px" />
   </UContainer>

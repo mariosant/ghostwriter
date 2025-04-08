@@ -17,6 +17,7 @@
     "@nuxt/ui": "3.0.2",
     "@nuxthub/core": "^0.8.23",
     "@vee-validate/nuxt": "^4.15.0",
+    "@vueuse/nuxt": "^13.0.0",
     "drizzle-orm": "^0.41.0",
     "nuxt": "^3.16.2",
     "nuxt-auth-utils": "0.5.18",

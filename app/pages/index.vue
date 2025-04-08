@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { isEqual } from "radash";
-
 const { user } = useUserSession();
-
-const toast = useToast();
 
 const stravaLink = computed(() => {
   return `https://www.strava.com/athletes/${toValue(user).id}`;
@@ -19,7 +15,7 @@ const preferences = useState<FormData>("preferences", () => ({
   language: "English",
 }));
 
-const { data: preferencesData, status } = useLazyFetch("/api/preferences", {
+const { status, refresh } = useFetch("/api/preferences", {
   onResponse({ error, response }) {
     if (error) {
       return;
@@ -29,29 +25,28 @@ const { data: preferencesData, status } = useLazyFetch("/api/preferences", {
   },
 });
 
-const onSavePreferences = async () => {
-  await $fetch("/api/preferences", {
-    method: "PUT",
-    body: toValue(preferences),
-  });
+onMounted(() => {
+  saveOp.resume();
+});
 
-  toast.add({
-    title: "Saved",
-    description: "Preferences saved succesfully!",
-  });
-};
-
-const onResetPreferences = () => {
-  preferences.value = { ...preferencesData.value };
-};
+const saveOp = watchPausable(
+  preferences,
+  async () => {
+    await $fetch("/api/preferences", {
+      method: "PUT",
+      body: toValue(preferences),
+    });
+  },
+  { initialState: "paused", deep: true },
+);
 </script>
 
 <template>
   <UContainer class="max-w-2xl py-8 flex flex-col gap-4">
-    <div class="font-bold text-lg">Welcome to Joyful!</div>
+    <div class="font-bold text-lg">Welcome to Strivify!</div>
 
     <div>
-      Joyful automatically generates fun and engaging titles and descriptions
+      Strivify automatically generates fun and engaging titles and descriptions
       for your Strava activities, right when they are created. Customize your
       preferences below.
     </div>
@@ -92,17 +87,6 @@ const onResetPreferences = () => {
           </template>
         </CardField>
       </div>
-
-      <template #footer>
-        <div class="flex gap-4">
-          <UButton class="px-4" @click="onSavePreferences"
-            >Save preferences</UButton
-          >
-          <UButton variant="ghost" color="neutral" @click="onResetPreferences"
-            >Cancel</UButton
-          >
-        </div>
-      </template>
     </UCard>
   </UContainer>
 
