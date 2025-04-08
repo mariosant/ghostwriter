@@ -28,7 +28,7 @@ export const users = sqliteTable("users", {
   sex: text("sex"),
   weight: integer("weight"),
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
-    () => new Date()
+    () => new Date(),
   ),
 });
 
@@ -43,10 +43,12 @@ export const preferences = sqliteTable("preferences", {
     .$type<{
       enabled: boolean;
       language: string;
+      tone: string;
     }>()
     .$defaultFn(() => ({
       enabled: true,
       language: "English",
+      tone: "Casual",
     })),
 });
 

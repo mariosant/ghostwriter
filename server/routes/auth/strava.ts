@@ -55,7 +55,8 @@ export default defineOAuthStravaEventHandler({
         userId: user.id,
         data: {
           enabled: true,
-          language: "english",
+          language: "English",
+          tone: "Casual",
         },
       })
       .onConflictDoNothing();

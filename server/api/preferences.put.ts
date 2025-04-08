@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
       data: {
         enabled: body.enabled,
         language: body.language,
+        tone: body.tone,
       },
     })
     .where(eq(tables.preferences.userId, session.user.id))

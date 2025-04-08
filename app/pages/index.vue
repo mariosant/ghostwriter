@@ -13,9 +13,10 @@ interface FormData {
 const preferences = useState<FormData>("preferences", () => ({
   enabled: false,
   language: "English",
+  tone: "Casual",
 }));
 
-const { status, refresh } = useFetch("/api/preferences", {
+const { status } = useFetch("/api/preferences", {
   onResponse({ error, response }) {
     if (error) {
       return;
@@ -83,6 +84,20 @@ const saveOp = watchPausable(
               class="min-w-28"
               :items="languages"
               v-model="preferences.language"
+            />
+          </template>
+        </CardField>
+
+        <CardField>
+          <template #title> Model tone </template>
+          <template #description>
+            Tone used for generated titles and descriptions.
+          </template>
+          <template #value>
+            <USelect
+              class="min-w-28"
+              v-model="preferences.tone"
+              :items="tones"
             />
           </template>
         </CardField>

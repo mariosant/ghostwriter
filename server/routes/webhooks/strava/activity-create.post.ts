@@ -1,4 +1,4 @@
-import { get } from "radash";
+import { get, omit } from "radash";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -19,9 +19,9 @@ export default defineEventHandler(async (event) => {
 
   const strava = await useStrava(body.owner_id);
 
-  const activity = await strava!(`/activities/${body.object_id}`);
+  const activity = (await strava!(`/activities/${body.object_id}`)) as any;
 
-  const aiResponse = await ai.run("@cf/meta/llama-3-8b-instruct", {
+  const aiResponse = await ai.run("@cf/meta/llama-3.1-8b-instruct", {
     response_format: {
       type: "json_schema",
       json_schema: {
@@ -34,20 +34,23 @@ export default defineEventHandler(async (event) => {
       },
     },
     prompt: `
-      Generate a title and a short description for my strava activity. Use my preferred language. Make sure to include emojis and make it fun.
+      Generate a title and a short description for my strava activity. Use my preferred language.
+      Use ${user?.preferences.data.tone} tone to generate content.
+      Add emojis unless tone is set to minimalist.
 
       My user profile:
       Sex: ${user?.sex}
-      City: ${user?.city}
-      Country: ${user?.country}
       Weight: ${user?.weight}
       Language: ${user?.preferences.data.language}
 
       The activity data in json format:
-      ${JSON.stringify(activity)}
+      ${JSON.stringify(omit(activity, ["map", "laps", "stats_visibility", "embed_token", "private_note"]))}
     `,
   });
 
+  // console.log(activity);
+  // console.log(aiResponse.response.title);
+  // console.log(aiResponse.response.description);
   await strava!(`activities/${body.object_id}`, {
     method: "PUT",
     body: {
