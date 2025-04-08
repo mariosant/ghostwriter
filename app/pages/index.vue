@@ -107,7 +107,7 @@ const saveOp = watchPausable(
 
   <UContainer class="max-w-2xl py-8 flex flex-col gap-4">
     <div class="font-bold text-lg">🪪 Your connected Strava account</div>
-    <UCard class="bg-neutral-50">
+    <UCard class="bg-neutral-50 dark:bg-slate-800">
       <div class="flex flex-col gap-8">
         <CardField>
           <template #title> Full name </template>
