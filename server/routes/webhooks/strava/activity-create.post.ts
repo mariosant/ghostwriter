@@ -30,7 +30,6 @@ export default defineEventHandler(async (event) => {
     start (local): ${get(activity, "start_date_local")}
     trainer: ${get(activity, "trainer")}
     commute: ${get(activity, "commute")}
-    suffer score: ${get(activity, "suffer_score")}/100
     calories: ${get(activity, "calories")}
   `;
 
@@ -74,11 +73,6 @@ export default defineEventHandler(async (event) => {
     ]),
   );
 
-  console.error(aiError?.message);
-
-  // console.log(activity);
-  // console.log(aiResponse.response.title);
-  // console.log(aiResponse.response.description);
   await strava!(`activities/${body.object_id}`, {
     method: "PUT",
     body: {
