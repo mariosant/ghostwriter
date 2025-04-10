@@ -2,7 +2,7 @@ import { omit } from "radash";
 
 export default defineOAuthStravaEventHandler({
   config: {
-    scope: ["read,activity:read,activity:write"],
+    scope: ["read,activity:read_all,activity:write"],
   },
   onSuccess: async (event, auth) => {
     const userPayload = {

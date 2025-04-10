@@ -1,4 +1,4 @@
-import { get, omit } from "radash";
+import { get, omit, tryit } from "radash";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -21,19 +21,34 @@ export default defineEventHandler(async (event) => {
 
   const activity = (await strava!(`/activities/${body.object_id}`)) as any;
 
-  const aiResponse = await ai.run("@cf/meta/llama-3.1-8b-instruct", {
-    response_format: {
-      type: "json_schema",
-      json_schema: {
-        type: "object",
-        properties: {
-          title: "string",
-          description: "string",
+  const promptActivity = `
+    type: ${get(activity, "type")}
+    distance: ${get(activity, "distance")}m
+    moving time: ${get(activity, "moving_time")}sec
+    elapsed time: ${get(activity, "elapsed_time")}sec
+    total elevation gain: ${get(activity, "total_elevation_gain")}m
+    start (local): ${get(activity, "start_date_local")}
+    trainer: ${get(activity, "trainer")}
+    commute: ${get(activity, "commute")}
+    suffer score: ${get(activity, "suffer_score")}/100
+    calories: ${get(activity, "calories")}
+  `;
+
+  const [aiError, aiResponse] = await tryit(ai.run)(
+    "@cf/meta/llama-3.1-8b-instruct",
+    {
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          type: "object",
+          properties: {
+            title: "string",
+            description: "string",
+          },
+          required: ["title", "description"],
         },
-        required: ["title", "description"],
       },
-    },
-    prompt: `
+      prompt: `
       Generate a title and a short description for my strava activity. Use my preferred language.
       Use ${user?.preferences.data.tone} tone to generate content.
       Add emojis unless tone is set to minimalist.
@@ -43,10 +58,23 @@ export default defineEventHandler(async (event) => {
       Weight: ${user?.weight}
       Language: ${user?.preferences.data.language}
 
-      The activity data in json format:
-      ${JSON.stringify(omit(activity, ["map", "laps", "stats_visibility", "embed_token", "private_note"]))}
+      The activity data:
+      ${promptActivity}
     `,
-  });
+    },
+  );
+
+  console.log(
+    omit(activity, [
+      "map",
+      "laps",
+      "stats_visibility",
+      "embed_token",
+      "private_note",
+    ]),
+  );
+
+  console.error(aiError?.message);
 
   // console.log(activity);
   // console.log(aiResponse.response.title);
