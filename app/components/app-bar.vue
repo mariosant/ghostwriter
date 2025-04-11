@@ -7,7 +7,7 @@ const { user, clear } = useUserSession();
     <UContainer class="max-w-2xl flex justify-between items-center">
       <div class="flex gap-3 items-center">
         <NuxtImg src="/strivify.png" width="36" height="36" />
-        <div class="font-bold text-xl">Strivify</div>
+        <div class="font-bold text-xl tracking-tight">Strivify</div>
       </div>
       <UDropdownMenu :items="[{ label: 'Log out', onSelect: () => clear() }]">
         <UAvatar

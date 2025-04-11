@@ -1,4 +1,6 @@
 <script setup lang="ts">
+useHead({ title: "Strivify" });
+
 const { user } = useUserSession();
 
 const stravaLink = computed(() => {

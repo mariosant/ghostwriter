@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import AppFooter from "./app-footer.vue";
 
+useHead({ title: "Strivify - Please sign in" });
+
 const { openInPopup } = useUserSession();
 </script>
 

@@ -12,6 +12,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     webhooksUrl: "",
     stravaVerifyToken: "",
+    openaiApiKey: "",
   },
   future: { compatibilityVersion: 4 },
   compatibilityDate: "2025-03-01",
@@ -19,6 +20,7 @@ export default defineNuxtConfig({
     ai: true,
     database: true,
   },
+
   app: {
     head: {
       link: [

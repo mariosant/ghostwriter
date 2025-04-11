@@ -1,4 +1,4 @@
-import { get, isEmpty } from "radash";
+import { get, isEmpty, tryit } from "radash";
 import { isAfter } from "@formkit/tempo";
 import { eq } from "drizzle-orm";
 import { URLSearchParams } from "url";
@@ -57,10 +57,12 @@ export const useStrava = async (userId: number) => {
       .where(eq(tables.tokens.userId, userId));
   }
 
-  return $fetch.create({
-    baseURL: "https://www.strava.com/api/v3/",
-    onRequest({ options }) {
-      options.headers.set("Authorization", `Bearer ${tokens?.accessToken}`);
-    },
-  });
+  return tryit(
+    $fetch.create({
+      baseURL: "https://www.strava.com/api/v3/",
+      onRequest({ options }) {
+        options.headers.set("Authorization", `Bearer ${tokens?.accessToken}`);
+      },
+    }),
+  );
 };

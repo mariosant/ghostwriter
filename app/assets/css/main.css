@@ -2,6 +2,8 @@
 @import "@nuxt/ui";
 
 @theme static {
+  --font-sans: "Geist", sans-serif;
+
   --ui-primary: var(--color-orange-500);
 
   --ui-color-primary-50: var(--color-orange-50);
