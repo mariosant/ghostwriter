@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useHead({ title: "Strivify" });
+useHead({ title: "Ghostwriter" });
 
 const { user } = useUserSession();
 
@@ -46,12 +46,12 @@ const saveOp = watchPausable(
 
 <template>
   <UContainer class="max-w-2xl py-8 flex flex-col gap-4">
-    <div class="font-bold text-lg">Welcome to Strivify!</div>
+    <div class="font-bold text-lg">Welcome to Ghostwriter!</div>
 
     <div>
-      Strivify automatically generates fun and engaging titles and descriptions
-      for your Strava activities, right when they are created. Customize your
-      preferences below.
+      Ghostwriter automatically generates fun and engaging titles and
+      descriptions for your Strava activities, right when they are created.
+      Customize your preferences below.
     </div>
 
     <div>

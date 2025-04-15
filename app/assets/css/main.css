@@ -3,6 +3,7 @@
 
 @theme static {
   --font-sans: "Geist", sans-serif;
+  --font-fira-code: "Fira Code", sans-serif;
 
   --ui-primary: var(--color-orange-500);
 
