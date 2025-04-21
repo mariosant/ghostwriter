@@ -1,14 +1,9 @@
 import { get, omit } from "radash";
-import { OpenAI } from "openai";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const db = useDrizzle();
-  const config = useRuntimeConfig();
-
-  const openai = new OpenAI({
-    apiKey: config.openaiApiKey,
-  });
+  const openai = useOpenAI();
 
   const user = await db.query.users.findFirst({
     where: (f, o) => o.eq(f.id, body.owner_id),
@@ -25,12 +20,13 @@ export default defineEventHandler(async (event) => {
 
   const [, activity] = await strava!<any>(`/activities/${body.object_id}`);
 
-  const aiResponse = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      {
-        role: "user",
-        content: `
+  const [aiError, aiResponse] = await openai("/responses", {
+    body: {
+      model: "gpt-4o-mini",
+      input: [
+        {
+          role: "user",
+          content: `
             Generate a title and a short description for my strava activity. Use my preferred language.
             Use ${user?.preferences.data.tone} tone to generate content.
             Add emojis unless tone is set to minimalist.
@@ -61,42 +57,43 @@ export default defineEventHandler(async (event) => {
               ]),
             )}
         `,
-      },
-    ],
-    tools: [
-      {
-        type: "function",
-        function: {
-          name: "generate_strava_meta",
-          description: "Generates Strava metadata.",
-          parameters: {
+        },
+      ],
+      text: {
+        format: {
+          type: "json_schema",
+          name: "activity",
+          schema: {
             type: "object",
             properties: {
               title: {
                 type: "string",
-                description: "The title of the activity",
               },
               description: {
                 type: "string",
-                description: "A short description of the activity",
               },
             },
             required: ["title", "description"],
+            additionalProperties: false,
           },
         },
-      },
-    ],
-    tool_choice: {
-      type: "function",
-      function: {
-        name: "generate_strava_meta",
       },
     },
   });
 
+  if (aiError) {
+    throw createError({
+      statusCode: 500,
+      message: `OPENAI API: ${aiError.message}`,
+    });
+  }
+
   const responseObject = JSON.parse(
-    get(aiResponse, "choices.0.message.tool_calls.0.function.arguments"),
-  ) as { title: string; description: string };
+    get(aiResponse, "output.0.content.0.text"),
+  ) as {
+    title: string;
+    description: string;
+  };
 
   const [stravaError] = await strava!(`activities/${body.object_id}`, {
     method: "PUT",

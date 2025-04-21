@@ -1,7 +1,6 @@
 export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   modules: [
-    "@nuxthub/core",
     "@nuxt/ui",
     "@nuxt/icon",
     "nuxt-auth-utils",
@@ -13,14 +12,10 @@ export default defineNuxtConfig({
     webhooksUrl: "",
     stravaVerifyToken: "",
     openaiApiKey: "",
+    databaseUrl: "",
   },
   future: { compatibilityVersion: 4 },
   compatibilityDate: "2025-03-01",
-  hub: {
-    ai: true,
-    database: true,
-  },
-
   app: {
     head: {
       link: [

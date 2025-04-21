@@ -1,25 +1,14 @@
 import { relations } from "drizzle-orm";
 import {
-  sqliteTable,
+  pgTable,
   text,
   integer,
   customType,
-} from "drizzle-orm/sqlite-core";
+  timestamp,
+  jsonb,
+} from "drizzle-orm/pg-core";
 
-const customJsonb = <TData>(name: string) =>
-  customType<{ data: TData; driverData: string }>({
-    dataType() {
-      return "jsonb";
-    },
-    toDriver(value: TData): string {
-      return JSON.stringify(value);
-    },
-    fromDriver(value: string): TData {
-      return JSON.parse(value);
-    },
-  })(name);
-
-export const users = sqliteTable("users", {
+export const users = pgTable("users", {
   id: integer("id").primaryKey(),
   name: text("name").notNull(),
   avatar: text("avatar").notNull(),
@@ -27,19 +16,17 @@ export const users = sqliteTable("users", {
   country: text("country"),
   sex: text("sex"),
   weight: integer("weight"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
-    () => new Date(),
-  ),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const preferences = sqliteTable("preferences", {
-  id: integer("id").primaryKey(),
+export const preferences = pgTable("preferences", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   userId: integer("user_id")
     .references(() => users.id, {
       onDelete: "cascade",
     })
     .unique(),
-  data: customJsonb("data")
+  data: jsonb("data")
     .$type<{
       enabled: boolean;
       language: string;
@@ -52,8 +39,8 @@ export const preferences = sqliteTable("preferences", {
     })),
 });
 
-export const tokens = sqliteTable("tokens", {
-  id: integer("id").primaryKey(),
+export const tokens = pgTable("tokens", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   userId: integer("user_id")
     .references(() => users.id, {
       onDelete: "cascade",
@@ -61,7 +48,7 @@ export const tokens = sqliteTable("tokens", {
     .unique(),
   refreshToken: text("refresh_token"),
   accessToken: text("access_token"),
-  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+  expiresAt: timestamp("expires_at").notNull().defaultNow(),
 });
 
 // Define relationships
