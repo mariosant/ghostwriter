@@ -1,10 +1,28 @@
-import { omit } from "radash";
+import { get, omit } from "radash";
+
+const requiredScope = ["read", "activity:write", "activity:read_all"];
+const hasEnoughScope = (scope: string) => {
+  const permissions = scope.split(",");
+
+  return requiredScope.every((p) => permissions.includes(p));
+};
 
 export default defineOAuthStravaEventHandler({
   config: {
-    scope: ["read,activity:read_all,activity:write"],
+    scope: [requiredScope.join(",")],
+    approvalPrompt: "force",
   },
   onSuccess: async (event, auth) => {
+    const query = getQuery(event);
+    const scope = get(query, "scope", "");
+
+    if (!hasEnoughScope(scope)) {
+      throw createError({
+        statusCode: 403,
+        message: "Insufficient scope",
+      });
+    }
+
     const userPayload = {
       id: auth.user.id,
       name: `${auth.user.firstname} ${auth.user.lastname}`,
@@ -14,10 +32,6 @@ export default defineOAuthStravaEventHandler({
       weight: auth.user.weight,
       avatar: auth.user.profile,
     };
-
-    await setUserSession(event, {
-      user: userPayload,
-    });
 
     const db = useDrizzle();
 
@@ -60,6 +74,10 @@ export default defineOAuthStravaEventHandler({
         },
       })
       .onConflictDoNothing();
+
+    await setUserSession(event, {
+      user: userPayload,
+    });
 
     sendRedirect(event, "/");
   },
