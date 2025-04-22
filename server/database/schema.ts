@@ -3,7 +3,7 @@ import {
   pgTable,
   text,
   integer,
-  customType,
+  numeric,
   timestamp,
   jsonb,
 } from "drizzle-orm/pg-core";
@@ -15,7 +15,7 @@ export const users = pgTable("users", {
   city: text("city"),
   country: text("country"),
   sex: text("sex"),
-  weight: integer("weight"),
+  weight: numeric("weight"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

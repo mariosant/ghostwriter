@@ -10,7 +10,6 @@ const hasEnoughScope = (scope: string) => {
 export default defineOAuthStravaEventHandler({
   config: {
     scope: [requiredScope.join(",")],
-    approvalPrompt: "force",
   },
   onSuccess: async (event, auth) => {
     const query = getQuery(event);
