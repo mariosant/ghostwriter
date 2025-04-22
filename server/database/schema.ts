@@ -15,7 +15,9 @@ export const users = pgTable("users", {
   city: text("city"),
   country: text("country"),
   sex: text("sex"),
-  weight: numeric("weight"),
+  weight: numeric("weight", {
+    mode: "number",
+  }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
