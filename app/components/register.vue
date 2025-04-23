@@ -42,7 +42,7 @@ const { openInPopup } = useUserSession();
                 <div class="text-sm text-gray-500">
                     By signing in, you agree to our
                     <NuxtLink
-                        href="https:www.ghostwriter.rocks/privacy"
+                        href="https://www.ghostwriter.rocks/privacy"
                         class="text-primary-500"
                         >Privacy Policy</NuxtLink
                     >.
