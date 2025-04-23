@@ -95,11 +95,13 @@ export default defineEventHandler(async (event) => {
     description: string;
   };
 
+  const promo = "https://ghostwriter.rocks 👻";
+
   const [stravaError] = await strava!(`activities/${body.object_id}`, {
     method: "PUT",
     body: {
       name: responseObject.title,
-      description: responseObject.description,
+      description: [responseObject.description, promo].join("\n"),
     },
   });
 
