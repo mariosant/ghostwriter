@@ -10,12 +10,15 @@ const stravaLink = computed(() => {
 interface FormData {
   enabled: boolean;
   language: string;
+  tone: string;
+  units: string;
 }
 
 const preferences = useState<FormData>("preferences", () => ({
   enabled: false,
   language: "English",
   tone: "Casual",
+  units: "Metric",
 }));
 
 const { status } = useFetch("/api/preferences", {
@@ -100,6 +103,20 @@ const saveOp = watchPausable(
               class="min-w-28"
               v-model="preferences.tone"
               :items="tones"
+            />
+          </template>
+        </CardField>
+
+        <CardField>
+          <template #title> Unit system </template>
+          <template #description>
+            Unit system preference, used in descriptions.
+          </template>
+          <template #value>
+            <USelect
+              class="min-w-28"
+              v-model="preferences.units"
+              :items="units"
             />
           </template>
         </CardField>

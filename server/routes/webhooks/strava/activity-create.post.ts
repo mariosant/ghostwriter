@@ -20,6 +20,8 @@ export default defineEventHandler(async (event) => {
 
   const [, activity] = await strava!<any>(`/activities/${body.object_id}`);
 
+  console.log(user?.preferences.data);
+
   const [aiError, aiResponse] = await openai("/responses", {
     body: {
       model: "gpt-4o-mini",
@@ -27,7 +29,7 @@ export default defineEventHandler(async (event) => {
         {
           role: "user",
           content: `
-            Generate a title and a short description for my strava activity. Use my preferred language.
+            Generate a title and a short description for my strava activity. Use my preferred language and unit system.
             Use ${user?.preferences.data.tone} tone to generate content.
             Add emojis unless tone is set to minimalist.
 
@@ -35,9 +37,13 @@ export default defineEventHandler(async (event) => {
             Sex: ${user?.sex}
             Weight: ${user?.weight}
             Language: ${user?.preferences.data.language}
+            Unit system: ${user?.preferences.data.units}
 
             Activity notes:
-            distance is in meters, time is in seconds, don't include average speed. Convert time to hours or minutes, whatever's closer.
+            distance is in meters, time is in seconds, don't include average speed.
+            Convert time to hours or minutes, whatever's closer.
+            Convert distance to larger units when appropriate, keep in mind we don't need much accuracy.
+
             The activity data in json format from strava:
             ${JSON.stringify(
               omit(activity, [
@@ -95,14 +101,16 @@ export default defineEventHandler(async (event) => {
     description: string;
   };
 
-  const promo = "https://ghostwriter.rocks 👻";
+  const promo = "Written by https://ghostwriter.rocks 👻";
+
+  const stravaRequestBody = {
+    name: responseObject.title,
+    description: [responseObject.description, promo].join("\n"),
+  };
 
   const [stravaError] = await strava!(`activities/${body.object_id}`, {
     method: "PUT",
-    body: {
-      name: responseObject.title,
-      description: [responseObject.description, promo].join("\n"),
-    },
+    body: stravaRequestBody,
   });
 
   if (stravaError) {
