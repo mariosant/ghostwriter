@@ -18,3 +18,5 @@ export const tones = ref([
   "Adventure",
   "Snarky",
 ]);
+
+export const units = ref(["Imperial", "Metric"]);

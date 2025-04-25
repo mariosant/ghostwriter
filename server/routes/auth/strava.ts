@@ -70,6 +70,7 @@ export default defineOAuthStravaEventHandler({
           enabled: true,
           language: "English",
           tone: "Casual",
+          units: "Metric",
         },
       })
       .onConflictDoNothing();
