@@ -18,7 +18,8 @@ export default defineOAuthStravaEventHandler({
     if (!hasEnoughScope(scope)) {
       throw createError({
         statusCode: 403,
-        message: "Insufficient scope",
+        message:
+          "Insufficient authentication scope. Please make sure all required permissions are allowed during Strava authentication process.",
       });
     }
 
