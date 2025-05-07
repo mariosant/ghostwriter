@@ -94,20 +94,6 @@ const saveOp = watchPausable(
         </CardField>
 
         <CardField>
-          <template #title> Model tone </template>
-          <template #description>
-            Tone used for generated titles and descriptions.
-          </template>
-          <template #value>
-            <USelect
-              class="min-w-28"
-              v-model="preferences.tone"
-              :items="tones"
-            />
-          </template>
-        </CardField>
-
-        <CardField>
           <template #title> Unit system </template>
           <template #description>
             Unit system preference, used in descriptions.
