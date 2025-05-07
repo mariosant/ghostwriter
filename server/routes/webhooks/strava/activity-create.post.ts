@@ -1,4 +1,4 @@
-import { get, omit } from "radash";
+import { get, omit, draw } from "radash";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -16,22 +16,32 @@ export default defineEventHandler(async (event) => {
     return;
   }
 
+  const tone = draw([
+    "casual",
+    "casual",
+    "casual",
+    "casual",
+    "funny",
+    "epic",
+    "poetic",
+    "reflective",
+    "snarky",
+  ]);
+
   const strava = await useStrava(body.owner_id);
 
   const [, activity] = await strava!<any>(`/activities/${body.object_id}`);
 
-  console.log(user?.preferences.data);
-
   const [aiError, aiResponse] = await openai("/responses", {
     body: {
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       input: [
         {
           role: "user",
           content: `
-            Generate a title and a short description for my strava activity. Use my preferred language and unit system.
-            Use ${user?.preferences.data.tone} tone to generate content.
-            Add emojis unless tone is set to minimalist.
+            Generate a short title and description for my strava activity. Use my preferred language and unit system.
+            Don't exaggerate. Try keeping it calm as I am using Strava often and I don't want to have boring feed. Keep things short.
+            Use a little bit of ${tone} bits to make things less boring.
 
             My user profile:
             Sex: ${user?.sex}
