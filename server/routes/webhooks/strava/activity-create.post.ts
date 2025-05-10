@@ -18,9 +18,6 @@ export default defineEventHandler(async (event) => {
 
   const tone = draw([
     "casual",
-    "casual",
-    "casual",
-    "casual",
     "funny",
     "epic",
     "poetic",
