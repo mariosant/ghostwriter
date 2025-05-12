@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { omit } from "radash";
+
 useHead({ title: "Ghostwriter" });
 
 const { user } = useUserSession();
@@ -10,14 +12,12 @@ const stravaLink = computed(() => {
 interface FormData {
   enabled: boolean;
   language: string;
-  tone: string;
   units: string;
 }
 
 const preferences = useState<FormData>("preferences", () => ({
   enabled: false,
   language: "English",
-  tone: "Casual",
   units: "Metric",
 }));
 
@@ -27,7 +27,7 @@ const { status } = useFetch("/api/preferences", {
       return;
     }
 
-    preferences.value = { ...response._data };
+    preferences.value = omit(response._data, ["tone"]) as FormData;
   },
 });
 

@@ -4,6 +4,7 @@ export const languages = ref([
   "German",
   "Italian",
   "Polish",
+  "Spanish",
 ]);
 
 export const tones = ref([

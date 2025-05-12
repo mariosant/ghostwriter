@@ -10,6 +10,7 @@ const movingActivityTypes = [
   "Crossfit",
   "EBikeRide",
   "Elliptical",
+  "Handcycle",
   "Hike",
   "IceSkate",
   "InlineSkate",
@@ -38,7 +39,6 @@ const movingActivityTypes = [
 ];
 
 const staticActivityTypes = [
-  "Handcycle",
   "Soccer",
   "Workout",
   "WeightTraining",

@@ -32,13 +32,11 @@ export const preferences = pgTable("preferences", {
     .$type<{
       enabled: boolean;
       language: string;
-      tone: string;
       units: "Imperial" | "Metric";
     }>()
     .$defaultFn(() => ({
       enabled: true,
       language: "English",
-      tone: "Casual",
       units: "Metric",
     })),
 });
