@@ -1,4 +1,5 @@
 import { get, omit } from "radash";
+import type { H3Event } from "h3";
 
 const requiredScope = ["read", "activity:write", "activity:read_all"];
 const hasEnoughScope = (scope: string) => {
@@ -11,7 +12,7 @@ export default defineOAuthStravaEventHandler({
   config: {
     scope: [requiredScope.join(",")],
   },
-  onSuccess: async (event, auth) => {
+  onSuccess: async (event: H3Event, auth: any) => {
     const query = getQuery(event);
     const scope = get(query, "scope", "");
 

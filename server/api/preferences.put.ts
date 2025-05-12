@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
       data: {
         enabled: body.enabled,
         language: body.language,
-        tone: body.tone,
         units: body.units,
       },
     })

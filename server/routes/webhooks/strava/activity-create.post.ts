@@ -1,10 +1,9 @@
-import { get, omit, draw } from "radash";
+import { get } from "radash";
 import { createActivityContent } from "~~/server/utils/create-content";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const db = useDrizzle();
-  const openai = useOpenAI();
 
   const user = await db.query.users.findFirst({
     where: (f, o) => o.eq(f.id, body.owner_id),
@@ -17,18 +16,9 @@ export default defineEventHandler(async (event) => {
     return;
   }
 
-  const tone = draw([
-    "casual",
-    "funny",
-    "epic",
-    "poetic",
-    "reflective",
-    "snarky",
-  ]);
-
   const strava = await useStrava(body.owner_id);
 
-  const [, activity] = await strava!<any>(`/activities/${body.object_id}`);
+  const activity = await strava!<any>(`/activities/${body.object_id}`);
 
   const [aiError, aiResponse] = await createActivityContent(activity, user);
   if (aiError) {
@@ -52,15 +42,13 @@ export default defineEventHandler(async (event) => {
     description: [responseObject.description, promo].join("\n"),
   };
 
-  const [stravaError] = await strava!(`activities/${body.object_id}`, {
+  await strava!(`activities/${body.object_id}`, {
     method: "PUT",
     body: stravaRequestBody,
-  });
-
-  if (stravaError) {
+  }).catch((error) => {
     throw createError({
       statusCode: 500,
-      message: `Strava API: ${stravaError.message}`,
+      message: `Strava API: ${error.message}`,
     });
-  }
+  });
 });

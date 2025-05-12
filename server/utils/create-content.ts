@@ -101,7 +101,10 @@ const stringifyActivity = chain<[Activity], Activity, string>(
   (activity) => JSON.stringify(activity),
 );
 
-export const createActivityContent = async (activity: Activity, user: User) => {
+export const createActivityContent = async (
+  activity: Activity,
+  user: User & { preferences: any },
+) => {
   const openai = useOpenAI();
 
   const tone = draw([
@@ -113,12 +116,14 @@ export const createActivityContent = async (activity: Activity, user: User) => {
     "snarky",
   ]);
 
-  console.log(tone, activity.type);
+  const length = draw(["short", "short", "short", "medium", "long"]);
+
+  console.log(tone, length);
 
   const prompt = `
-    Generate a short title and description for my strava activity. Use my preferred language and unit system.
+    Generate a short title and a ${length}-lengthed description for my strava activity. Use my preferred language and unit system.
     Don't exaggerate. Try keeping it calm as I am using Strava often and I don't want to have boring feed. Keep things short.
-    Use a little bit of ${tone} to make things less boring. Highlight any PR if available.
+    Use a little bit of ${tone} to make things less boring. Highlight any PR only if available, do not mention them if no PRs.
 
     Language: ${user?.preferences.data.language}
     Unit system: ${user?.preferences.data.units}
@@ -134,7 +139,7 @@ export const createActivityContent = async (activity: Activity, user: User) => {
 
   const [aiError, aiResponse] = await openai("/responses", {
     body: {
-      model: "gpt-4o",
+      model: "gpt-4.1",
       input: [
         {
           role: "user",

@@ -1,4 +1,4 @@
-import { get, isEmpty } from "radash";
+import { get } from "radash";
 import { eq } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {

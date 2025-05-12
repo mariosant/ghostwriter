@@ -57,12 +57,12 @@ export const useStrava = async (userId: number) => {
       .where(eq(tables.tokens.userId, userId));
   }
 
-  return tryit(
-    $fetch.create({
-      baseURL: "https://www.strava.com/api/v3/",
-      onRequest({ options }) {
-        options.headers.set("Authorization", `Bearer ${tokens?.accessToken}`);
-      },
-    }),
-  );
+  const client = $fetch.create({
+    baseURL: "https://www.strava.com/api/v3/",
+    onRequest({ options }) {
+      options.headers.set("Authorization", `Bearer ${tokens?.accessToken}`);
+    },
+  });
+
+  return client;
 };
