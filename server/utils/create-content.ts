@@ -116,14 +116,14 @@ export const createActivityContent = async (
     "snarky",
   ]);
 
-  const length = draw(["short", "short", "short", "medium", "long"]);
-
-  console.log(tone, length);
+  const length = draw(["short", "short", "short", "medium", "a-little-more-than-medium"]);
 
   const prompt = `
     Generate a short title and a ${length}-lengthed description for my strava activity. Use my preferred language and unit system.
-    Don't exaggerate. Try keeping it calm as I am using Strava often and I don't want to have boring feed. Keep things short.
+    Try to not exaggerate as I am using Strava often and I want my activites to be unique and easy to read. Don't say things like nothing too fancy or wild.
     Use a little bit of ${tone} to make things less boring. Highlight any PR only if available, do not mention them if no PRs.
+
+    Add #${tone} at the end of the description. Depending the length of the description, maybe add more hashtags.
 
     Language: ${user?.preferences.data.language}
     Unit system: ${user?.preferences.data.units}
