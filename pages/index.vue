@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { omit } from "radash";
+import { diff, omit } from "radash";
+import { trackEvent } from "@aptabase/web";
 
 useHead({ title: "Ghostwriter" });
 
@@ -43,7 +44,17 @@ const saveOp = watchPausable(
       body: toValue(preferences),
     });
   },
-  { initialState: "paused", deep: true },
+  {
+    initialState: "paused",
+    deep: true,
+    onTrigger: (event) => {
+      trackEvent("update_preferences", {
+        key: event.key,
+        value: event.newValue,
+        oldValue: event.oldValue,
+      });
+    },
+  },
 );
 </script>
 

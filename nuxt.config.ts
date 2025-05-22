@@ -13,6 +13,9 @@ export default defineNuxtConfig({
     stravaVerifyToken: "",
     openaiApiKey: "",
     databaseUrl: "",
+    public: {
+      aptabaseAppKey: "",
+    },
   },
   future: { compatibilityVersion: 4 },
   compatibilityDate: "2025-03-01",

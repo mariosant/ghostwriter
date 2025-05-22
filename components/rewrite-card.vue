@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { trackEvent } from "@aptabase/web";
 import type { FormSubmitEvent } from "@nuxt/ui";
 
 const { user } = useUserSession();
@@ -34,6 +35,10 @@ const validate = ({
 };
 
 const submit = async (event: FormSubmitEvent<typeof formData>) => {
+  trackEvent("rewrite_activity", {
+    activityUrl: event.data.activityUrl,
+  });
+
   await $fetch("/api/rewrite", {
     method: "POST",
     query: {
