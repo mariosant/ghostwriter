@@ -32,6 +32,7 @@ export default defineOAuthStravaEventHandler({
       sex: auth.user.sex,
       weight: auth.user.weight,
       avatar: auth.user.profile,
+      premium: false,
     };
 
     const db = useDrizzle();
@@ -41,7 +42,7 @@ export default defineOAuthStravaEventHandler({
       .values(userPayload)
       .onConflictDoUpdate({
         target: tables.users.id,
-        set: omit(userPayload, ["id"]),
+        set: omit(userPayload, ["id", "premium"]),
       })
       .returning();
 
@@ -77,7 +78,7 @@ export default defineOAuthStravaEventHandler({
       .onConflictDoNothing();
 
     await setUserSession(event, {
-      user: userPayload,
+      user: { ...userPayload, premium: user.premium },
     });
 
     sendRedirect(event, "/");

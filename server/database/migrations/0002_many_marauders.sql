@@ -1,0 +1,1 @@
+ALTER TABLE "users" ALTER COLUMN "premium" SET NOT NULL;

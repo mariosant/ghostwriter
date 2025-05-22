@@ -1,5 +1,8 @@
-import { chain, draw, omit } from "radash";
+import { chain, draw, get, omit, tryit } from "radash";
+import { safeDestr } from "destr";
 import { User } from "./drizzle";
+
+const promo = "Written by https://ghostwriter.rocks 👻";
 
 type Activity = Record<string, any>;
 
@@ -116,7 +119,13 @@ export const createActivityContent = async (
     "snarky",
   ]);
 
-  const length = draw(["short", "short", "short", "medium", "a-little-more-than-medium"]);
+  const length = draw([
+    "short",
+    "short",
+    "short",
+    "medium",
+    "a-little-more-than-medium",
+  ]);
 
   const prompt = `
     Generate a short title and a ${length}-lengthed description for my strava activity. Use my preferred language and unit system.
@@ -168,5 +177,17 @@ export const createActivityContent = async (
     },
   });
 
-  return [aiError, aiResponse] as const;
+  const [parseError, responseObject] = tryit(
+    chain(
+      (r) => get(r, "output.0.content.0.text"),
+      (r) => safeDestr<{ title: string; description: string }>(r),
+    ),
+  )(aiResponse);
+
+  const stravaRequestBody = {
+    name: responseObject!.title,
+    description: [responseObject!.description, promo].join("\n"),
+  };
+
+  return [aiError || parseError, stravaRequestBody] as const;
 };

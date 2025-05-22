@@ -20,27 +20,16 @@ export default defineEventHandler(async (event) => {
 
   const activity = await strava!<any>(`/activities/${body.object_id}`);
 
-  const [aiError, aiResponse] = await createActivityContent(activity, user);
+  const [aiError, stravaRequestBody] = await createActivityContent(
+    activity,
+    user,
+  );
   if (aiError) {
     throw createError({
       statusCode: 500,
       message: `OPENAI API: ${aiError.message}`,
     });
   }
-
-  const responseObject = JSON.parse(
-    get(aiResponse, "output.0.content.0.text"),
-  ) as {
-    title: string;
-    description: string;
-  };
-
-  const promo = "Written by https://ghostwriter.rocks 👻";
-
-  const stravaRequestBody = {
-    name: responseObject.title,
-    description: [responseObject.description, promo].join("\n"),
-  };
 
   await strava!(`activities/${body.object_id}`, {
     method: "PUT",
