@@ -9,6 +9,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@aptabase/web": "^0.4.3",
     "@formkit/tempo": "^0.1.2",
     "@neondatabase/serverless": "^1.0.0",
     "@nuxt/icon": "1.11.0",
