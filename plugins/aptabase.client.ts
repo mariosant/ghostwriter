@@ -7,7 +7,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     init(config.public.aptabaseAppKey, { isDebug: import.meta.dev });
   });
 
-  nuxtApp.hook("page:finish", (ctx) => {
+  nuxtApp.hook("page:finish", () => {
     const route = useRoute();
 
     trackEvent("page_view", {

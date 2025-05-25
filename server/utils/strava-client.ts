@@ -1,4 +1,4 @@
-import { get, isEmpty, tryit } from "radash";
+import { get, isEmpty } from "radash";
 import { isAfter } from "@formkit/tempo";
 import { eq } from "drizzle-orm";
 import { URLSearchParams } from "url";
@@ -43,8 +43,8 @@ export const useStrava = async (userId: number) => {
     return;
   }
 
-  const tokens = isAfter(now, user?.tokens?.expiresAt!)
-    ? await refreshStravaToken(user?.tokens?.refreshToken!)
+  const tokens = isAfter(now, user?.tokens?.expiresAt)
+    ? await refreshStravaToken(user?.tokens?.refreshToken)
     : user?.tokens;
 
   if (get(tokens, "needsUpdate", false)) {

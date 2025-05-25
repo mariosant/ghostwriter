@@ -1,4 +1,3 @@
-import { get } from "radash";
 import { createActivityContent } from "~~/server/utils/create-content";
 
 export default defineEventHandler(async (event) => {
