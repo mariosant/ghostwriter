@@ -38,7 +38,11 @@ onMounted(() => {
 
 const saveOp = watchPausable(
   preferences,
-  async () => {
+  async (newData) => {
+    trackEvent("update_preferences", {
+      ...newData,
+    });
+
     await $fetch("/api/preferences", {
       method: "PUT",
       body: toValue(preferences),
@@ -47,13 +51,6 @@ const saveOp = watchPausable(
   {
     initialState: "paused",
     deep: true,
-    onTrigger: (event) => {
-      trackEvent("update_preferences", {
-        key: event.key,
-        value: event.newValue,
-        oldValue: event.oldValue,
-      });
-    },
   },
 );
 </script>
