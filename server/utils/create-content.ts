@@ -1,4 +1,4 @@
-import { chain, draw, get, omit, tryit } from "radash";
+import { chain, draw, get, omit, pick, tryit } from "radash";
 import { safeDestr } from "destr";
 import { User } from "./drizzle";
 
@@ -104,10 +104,15 @@ const stringifyActivity = chain<[Activity], Activity, string>(
   (activity) => JSON.stringify(activity),
 );
 
-export const createActivityContent = async (
-  activity: Activity,
-  user: User & { preferences: any },
-) => {
+export const createActivityContent = async ({
+  currentActivity,
+  previousActivities,
+  user,
+}: {
+  currentActivity: Activity;
+  previousActivities: Activity[];
+  user: User & { preferences: any };
+}) => {
   const openai = useOpenAI();
 
   const tone = draw([
@@ -131,6 +136,7 @@ export const createActivityContent = async (
     Generate a short title and a ${length}-lengthed description for my strava activity. Use my preferred language and unit system.
     Try to not exaggerate as I am using Strava often and I want my activites to be unique and easy to read. Don't say things like nothing too fancy or wild.
     Use a little bit of ${tone} to make things less boring. Highlight any PR only if available, do not mention them if no PRs.
+    Maybe comment if any interesting fact in comparison to previous activities.
 
     Add #${tone} at the end of the description. Depending the length of the description, maybe add more hashtags.
 
@@ -143,7 +149,10 @@ export const createActivityContent = async (
     Convert distance to larger units when appropriate, keep in mind we don't need much accuracy.
 
     The activity data in json format from strava:
-    ${stringifyActivity(activity)}
+    ${stringifyActivity(currentActivity)}
+
+    The recent previous activities in json format:
+    ${previousActivities.map((a) => pick(a, ["distance", "moving_time", "total_elavation_gain", "type", "start_date", "average_speed", "average_watts", "average_heartrate", "max_heartrate"])).map(stringifyActivity)}
   `;
 
   const [aiError, aiResponse] = await openai("/responses", {

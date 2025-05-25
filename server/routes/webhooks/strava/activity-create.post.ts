@@ -18,12 +18,14 @@ export default defineEventHandler(async (event) => {
 
   const strava = await useStrava(body.owner_id);
 
-  const activity = await strava!<any>(`/activities/${body.object_id}`);
+  const currentActivity = await strava!<any>(`/activities/${body.object_id}`);
+  const [, ...previousActivities] = await strava!<any[]>(`/activities`);
 
-  const [aiError, stravaRequestBody] = await createActivityContent(
-    activity,
-    user,
-  );
+  const [aiError, stravaRequestBody] = await createActivityContent({
+    currentActivity,
+    previousActivities,
+    user: user!,
+  });
   if (aiError) {
     throw createError({
       statusCode: 500,
