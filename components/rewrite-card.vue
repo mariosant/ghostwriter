@@ -67,7 +67,6 @@ const submit = async (event: FormSubmitEvent<typeof formData>) => {
 
 <template>
   <UForm
-    :disabled="!user.premium"
     ref="form"
     @submit="submit"
     :validate="validate"
@@ -78,14 +77,6 @@ const submit = async (event: FormSubmitEvent<typeof formData>) => {
       <UContainer class="max-w-2xl py-8 flex flex-col gap-4">
         <div class="flex justify-between items-center">
           <div class="font-bold text-lg">🔄 Re-write activity</div>
-          <UTooltip
-            arrow
-            :disabled="user.premium"
-            text="This feature is enabled for premium users. You can upgrade to
-        premium by supporting Ghostwriter."
-          >
-            <UBadge variant="soft">Premium only</UBadge>
-          </UTooltip>
         </div>
         <UCard>
           <div class="grid gap-4">

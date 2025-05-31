@@ -16,7 +16,6 @@ declare module "#auth-utils" {
       sex: string;
       weight: number;
       avatar: string;
-      premium: boolean;
     };
   }
 

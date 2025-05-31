@@ -6,7 +6,6 @@ import {
   numeric,
   timestamp,
   jsonb,
-  boolean,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -16,9 +15,6 @@ export const users = pgTable("users", {
   city: text("city"),
   country: text("country"),
   sex: text("sex"),
-  premium: boolean("premium")
-    .notNull()
-    .$defaultFn(() => false),
   weight: numeric("weight", {
     mode: "number",
   }),
