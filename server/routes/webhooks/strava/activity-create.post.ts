@@ -1,6 +1,8 @@
 import { createActivityContent } from "~~/server/utils/create-content";
 
 export default defineEventHandler(async (event) => {
+  await validateHookdeck(event);
+
   const body = await readBody(event);
   const db = useDrizzle();
 

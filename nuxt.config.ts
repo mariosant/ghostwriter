@@ -11,6 +11,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     webhooksUrl: "",
     stravaVerifyToken: "",
+    hookdeckKey: "",
     openaiApiKey: "",
     databaseUrl: "",
     public: {

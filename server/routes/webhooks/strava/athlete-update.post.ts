@@ -2,6 +2,8 @@ import { get } from "radash";
 import { eq } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
+  await validateHookdeck(event);
+
   const body = await readBody(event);
   const db = useDrizzle();
 
