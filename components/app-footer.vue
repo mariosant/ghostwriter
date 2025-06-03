@@ -4,8 +4,12 @@
   >
     <div class="text-center">
       Built with 💪 in Athens, Greece 🇬🇷 by Marios Antonoudiou.
-      <ULink class="underline" href="mailto:mariosant@sent.com"
-        >Send feedback</ULink
+
+      <ULink
+        class="underline"
+        target="_blank"
+        href="https://buymeacoffee.com/mariosant"
+        >Support Ghostwriter 👻</ULink
       >.
     </div>
     <NuxtImg src="/images/powered-by-strava.svg" width="80px" />

@@ -60,9 +60,9 @@ const saveOp = watchPausable(
     <div class="font-bold text-lg">Welcome to Ghostwriter!</div>
 
     <div>
-      Ghostwriter automatically generates fun and engaging titles and
-      descriptions for your Strava activities, right when they are created.
-      Customize your preferences below.
+      Let's generate fun and engaging titles and descriptions for your Strava
+      activities automatically, right when they are created. Customize your
+      preferences below.
     </div>
 
     <div>
@@ -70,6 +70,26 @@ const saveOp = watchPausable(
       choose your language, and we'll do the rest!
     </div>
   </UContainer>
+
+  <UContainer class="max-w-2xl py-8 flex flex-col gap-4">
+    <div class="font-bold text-lg">❤️ Support</div>
+    <UCard class="">
+      <div class="flex flex-col gap-8">
+        Ghostwriter 👻 is free but keeping it up and running is not! Please
+        consider supporting this application and it's author.
+      </div>
+      <template #footer>
+        <ULink href="https://buymeacoffee.com/mariosant" target="_blank">
+          <NuxtImg
+            src="images/bmac-orange-button.png"
+            height="32px"
+            class="h-8"
+          />
+        </ULink>
+      </template>
+    </UCard>
+  </UContainer>
+
   <UContainer
     class="max-w-2xl py-8 flex flex-col gap-4"
     v-if="status === 'success'"

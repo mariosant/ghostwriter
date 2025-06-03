@@ -13,10 +13,10 @@ const { openInPopup } = useUserSession();
     <UCard class="max-w-sm grid gap-6 justify-center items-center">
       <div class="flex flex-col gap-10 items-center justify-center">
         <div class="flex gap-2 items-center">
-          <NuxtImg src="/ghostwriter-logo.png" class="size-9" />
           <div class="font-bold text-xl tracking-tight font-fira-code">
             Ghostwriter
           </div>
+          <NuxtImg src="/ghostwriter-logo.png" class="size-9" />
         </div>
         <div class="grid gap-2">
           <div class="text-center text-2xl font-bold">
