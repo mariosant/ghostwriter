@@ -75,8 +75,7 @@ const saveOp = watchPausable(
     <div class="font-bold text-lg">❤️ Support</div>
     <UCard class="">
       <div class="flex flex-col gap-8">
-        Ghostwriter 👻 is free but keeping it up and running is not! Please
-        consider supporting this application and it's author.
+        Ghostwriter 👻 is free to use, but it takes time and resources to keep it running smoothly. If you enjoy it, consider supporting the app and its creator - every bit helps!
       </div>
       <template #footer>
         <ULink href="https://buymeacoffee.com/mariosant" target="_blank">
