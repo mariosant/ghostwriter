@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { diff, omit } from "radash";
 import { trackEvent } from "@aptabase/web";
 
 useHead({ title: "Ghostwriter" });
@@ -14,23 +13,22 @@ interface FormData {
   enabled: boolean;
   language: string;
   units: string;
+  tone: string[];
 }
 
 const preferences = useState<FormData>("preferences", () => ({
   enabled: false,
   language: "English",
   units: "Metric",
+  tone: [],
 }));
 
-const { status } = useFetch("/api/preferences", {
-  onResponse({ error, response }) {
-    if (error) {
-      return;
-    }
-
-    preferences.value = omit(response._data, ["tone"]) as FormData;
-  },
+const { data, status } = useFetch("/api/preferences", {
+  lazy: true,
 });
+
+// @ts-expect-error typing issue - missing transform
+syncRef(data, preferences, { direction: "ltr", deep: true });
 
 onMounted(() => {
   saveOp.resume();
@@ -40,7 +38,7 @@ const saveOp = watchPausable(
   preferences,
   async (newData) => {
     trackEvent("update_preferences", {
-      ...newData,
+      enabled: newData.enabled,
     });
 
     await $fetch("/api/preferences", {
@@ -75,7 +73,9 @@ const saveOp = watchPausable(
     <div class="font-bold text-lg">❤️ Support</div>
     <UCard class="">
       <div class="flex flex-col gap-8">
-        Ghostwriter 👻 is free to use, but it takes time and resources to keep it running smoothly. If you enjoy it, consider supporting the app and its creator - every bit helps!
+        Ghostwriter 👻 is free to use, but it takes time and resources to keep
+        it running smoothly. If you enjoy it, consider supporting the app and
+        its creator - every bit helps!
       </div>
       <template #footer>
         <ULink href="https://buymeacoffee.com/mariosant" target="_blank">
@@ -130,6 +130,22 @@ const saveOp = watchPausable(
               class="min-w-28"
               v-model="preferences.units"
               :items="units"
+            />
+          </template>
+        </CardField>
+
+        <CardField>
+          <template #title> Tone </template>
+          <template #description>
+            Choose one or more writing styles you like.
+          </template>
+          <template #value>
+            <USelect
+              multiple
+              class="min-w-28 max-w-64"
+              v-model="preferences.tone"
+              :items="tones"
+              placeholder="None specified (Use all)"
             />
           </template>
         </CardField>

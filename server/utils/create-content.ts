@@ -1,6 +1,7 @@
-import { chain, draw, get, omit, pick, tryit } from "radash";
+import { chain, draw, get, isEmpty, omit, pick, tryit } from "radash";
 import { safeDestr } from "destr";
 import { User } from "./drizzle";
+import { availableTones } from "~/shared/constants";
 
 const promo = "Written by https://ghostwriter.rocks 👻";
 
@@ -111,18 +112,13 @@ export const createActivityContent = async ({
 }: {
   currentActivity: Activity;
   previousActivities: Activity[];
-  user: User & { preferences: any };
+  user: User & { preferences: Preferences };
 }) => {
   const openai = useOpenAI();
 
-  const tone = draw([
-    "casual",
-    "funny",
-    "epic",
-    "poetic",
-    "reflective",
-    "snarky",
-  ]);
+  const tone = isEmpty(user.preferences.data?.tone)
+    ? (draw(availableTones) as string)
+    : draw(user.preferences.data!.tone!);
 
   const length = draw([
     "short",
@@ -135,7 +131,7 @@ export const createActivityContent = async ({
   const prompt = `
     Generate a short title and a ${length}-lengthed description for my strava activity. Use my preferred language and unit system.
     Try to not exaggerate as I am using Strava often and I want my activites to be unique and easy to read. Don't say things like nothing too fancy or wild.
-    Use a little bit of ${tone} to make things less boring. Highlight any PR only if available, do not mention them if no PRs.
+    Use a little bit of ${tone} tone to make things less boring. Highlight any PR only if available, do not mention them if no PRs.
     Maybe comment if any interesting fact in comparison to previous activities.
 
     Add #${tone} at the end of the description. Depending the length of the description, maybe add more hashtags.

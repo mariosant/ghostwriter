@@ -1,23 +1,11 @@
-export const languages = ref([
-  "English",
-  "Greek",
-  "German",
-  "Italian",
-  "Polish",
-  "Spanish",
-]);
+import {
+  availableLanguages,
+  availableTones,
+  availableUnits,
+} from "~/shared/constants";
 
-export const tones = ref([
-  "Motivational",
-  "Casual",
-  "Funny",
-  "Epic",
-  "Minimalist",
-  "Reflective",
-  "Poetic",
-  "Competitive",
-  "Adventure",
-  "Snarky",
-]);
+export const languages = ref(availableLanguages);
 
-export const units = ref(["Imperial", "Metric"]);
+export const tones = ref(availableTones);
+
+export const units = ref(availableUnits);

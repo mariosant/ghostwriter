@@ -1,7 +1,22 @@
+import * as z from "zod";
+import {
+  availableLanguages,
+  availableTones,
+  availableUnits,
+} from "~/shared/constants";
+//
+const bodySchema = z.strictObject({
+  enabled: z.boolean(),
+  language: z.enum(availableLanguages),
+  units: z.enum(availableUnits),
+  tone: z.array(z.enum(availableTones)),
+});
+
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event);
+  const body = await readValidatedBody(event, (body) => bodySchema.parse(body));
+
   const db = useDrizzle();
-  const body = await readBody(event);
 
   const [preferences] = await db
     .update(tables.preferences)
@@ -10,6 +25,7 @@ export default defineEventHandler(async (event) => {
         enabled: body.enabled,
         language: body.language,
         units: body.units,
+        tone: body.tone,
       },
     })
     .where(eq(tables.preferences.userId, session.user.id))

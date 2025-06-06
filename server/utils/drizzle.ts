@@ -12,4 +12,5 @@ export function useDrizzle() {
 }
 
 export type User = typeof schema.users.$inferSelect;
+export type Preferences = typeof schema.preferences.$inferSelect;
 export type Tokens = typeof schema.tokens.$inferSelect;
