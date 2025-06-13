@@ -14,6 +14,7 @@ interface FormData {
   language: string;
   units: string;
   tone: string[];
+  highlights: string[];
 }
 
 const preferences = useState<FormData>("preferences", () => ({
@@ -21,6 +22,7 @@ const preferences = useState<FormData>("preferences", () => ({
   language: "English",
   units: "Metric",
   tone: [],
+  highlights: [],
 }));
 
 const { data, status } = useFetch("/api/preferences", {
@@ -145,6 +147,22 @@ const saveOp = watchPausable(
               class="min-w-28 max-w-64"
               v-model="preferences.tone"
               :items="tones"
+              placeholder="None specified (Use all)"
+            />
+          </template>
+        </CardField>
+
+        <CardField>
+          <template #title> Highlight </template>
+          <template #description>
+            Choose what Ghostwriter should focus on.
+          </template>
+          <template #value>
+            <USelect
+              multiple
+              class="min-w-28 max-w-64"
+              :items="highlights"
+              v-model="preferences.highlights"
               placeholder="None specified (Use all)"
             />
           </template>

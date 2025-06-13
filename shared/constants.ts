@@ -22,3 +22,11 @@ export const availableLanguages = [
 ] as const;
 
 export const availableUnits = ["Imperial", "Metric"] as const;
+
+export const availableHighlights = [
+  "Athletic",
+  "Area Exploration",
+  "Social",
+  "Mood",
+  "Conditions",
+] as const;

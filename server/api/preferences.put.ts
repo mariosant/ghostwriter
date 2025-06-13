@@ -1,5 +1,6 @@
 import * as z from "zod";
 import {
+  availableHighlights,
   availableLanguages,
   availableTones,
   availableUnits,
@@ -10,6 +11,7 @@ const bodySchema = z.strictObject({
   language: z.enum(availableLanguages),
   units: z.enum(availableUnits),
   tone: z.array(z.enum(availableTones)),
+  highlights: z.array(z.enum(availableHighlights)),
 });
 
 export default defineEventHandler(async (event) => {
@@ -26,6 +28,7 @@ export default defineEventHandler(async (event) => {
         language: body.language,
         units: body.units,
         tone: body.tone,
+        highlights: body.highlights,
       },
     })
     .where(eq(tables.preferences.userId, session.user.id))

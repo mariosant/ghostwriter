@@ -34,12 +34,14 @@ export const preferences = pgTable("preferences", {
       language: string;
       units: "Imperial" | "Metric";
       tone?: string[];
+      highlights?: string[];
     }>()
     .$defaultFn(() => ({
       enabled: true,
       language: "English",
       units: "Metric",
       tone: [],
+      highlights: [],
     })),
 });
 
