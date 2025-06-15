@@ -53,7 +53,7 @@ const staticActivityTypes = [
 
 const stringifyActivity = chain<[Activity], Activity, string>(
   (activity) => {
-    if (movingActivityTypes.includes(activity.type)) {
+    if (movingActivityTypes.includes(activity.sport_type)) {
       return omit(activity, [
         "laps",
         "splits_metric",
@@ -70,7 +70,7 @@ const stringifyActivity = chain<[Activity], Activity, string>(
       ]);
     }
 
-    if (staticActivityTypes.includes(activity.type)) {
+    if (staticActivityTypes.includes(activity.sport_type)) {
       return omit(activity, [
         "laps",
         "splits_metric",
@@ -124,23 +124,28 @@ export const createActivityContent = async ({
   const highlight = isEmpty(user.preferences.data?.highlights)
     ? (draw(availableHighlights) as string)
     : draw(user.preferences.data!.highlights!);
-  const highlightInstructions = match(highlight)
-    .with(
-      "Athletic",
-      () =>
-        "Highlight athletic properties and performance. Highlight PR's as well only if available.",
+  const highlightInstructions = match({ highlight, activity: currentActivity })
+    .when(
+      ({ highlight, activity }) =>
+        highlight === "Area Exploration" &&
+        movingActivityTypes.includes(get(activity, "sport_type")),
+      () => "Highlight places visited and areas explored.",
     )
-    .with("Area Exploration", () => "Highlight area exploration properties.")
     .with(
-      "Social",
+      { highlight: "Athletic" },
+      () =>
+        "Highlight athletic properties and performance. Highlight PR's as well but only if available.",
+    )
+    .with(
+      { highlight: "Social" },
       () =>
         "Highlight social properties such as friend participation and activities.",
     )
     .with(
-      "Mood",
-      () => "Highlight on how mood was swinging through the activity.",
+      { highlight: "Mood" },
+      () => "Highlight how mood was swinging through the activity.",
     )
-    .with("Conditions", () => "Highlight on weather conditions");
+    .with({ highlight: "Conditions" }, () => "Highlight on weather conditions");
 
   const length = match({ tone })
     .with({ tone: "Minimalist" }, () => "short")
