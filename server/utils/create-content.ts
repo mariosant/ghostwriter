@@ -1,5 +1,6 @@
 import { chain, draw, get, isEmpty, omit, pick, tryit } from "radash";
 import { safeDestr } from "destr";
+import { match } from "ts-pattern";
 import { User } from "./drizzle";
 import { availableHighlights, availableTones } from "~/shared/constants";
 
@@ -123,19 +124,39 @@ export const createActivityContent = async ({
   const highlight = isEmpty(user.preferences.data?.highlights)
     ? (draw(availableHighlights) as string)
     : draw(user.preferences.data!.highlights!);
+  const highlightInstructions = match(highlight)
+    .with(
+      "Athletic",
+      () =>
+        "Highlight athletic properties and performance. Highlight PR's as well only if available.",
+    )
+    .with("Area Exploration", () => "Highlight area exploration properties.")
+    .with(
+      "Social",
+      () =>
+        "Highlight social properties such as friend participation and activities.",
+    )
+    .with(
+      "Mood",
+      () => "Highlight on how mood was swinging through the activity.",
+    )
+    .with("Conditions", () => "Highlight on weather conditions");
 
-  const length = draw(["short", "medium", "a-little-more-than-medium"]);
+  const length = match({ tone })
+    .with({ tone: "Minimalist" }, () => "short")
+    .otherwise(() => draw(["short", "medium", "a-little-more-than-medium"]));
 
   const prompt = `
     Generate a short title and a ${length}-lengthed description for my strava activity. Use my preferred language and unit system.
     Try to not exaggerate as I am using Strava often and I want my activites to be unique and easy to read. Don't say things like nothing too fancy or wild.
-    Use a little bit of ${tone} tone to make things less boring. Highlight ${highlight} properties if available.
+    Use a little bit of ${tone} tone to make things less boring.
+    ${highlightInstructions}
     Maybe comment if any interesting fact in comparison to previous activities.
 
     Add #${tone} and #${highlight} at the end of the description. Depending the length of the description, maybe add more hashtags.
 
-    Language: ${user?.preferences.data.language}
-    Unit system: ${user?.preferences.data.units}
+    Language: ${user?.preferences.data!.language}
+    Unit system: ${user?.preferences.data!.units}
 
     Activity notes:
     Distance is in meters, time is in seconds, don't include average speed.

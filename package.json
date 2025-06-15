@@ -11,6 +11,7 @@
   "dependencies": {
     "@aptabase/web": "^0.4.3",
     "@formkit/tempo": "^0.1.2",
+    "@google/genai": "^1.5.1",
     "@neondatabase/serverless": "^1.0.0",
     "@nuxt/icon": "1.11.0",
     "@nuxt/image": "^1.10.0",
@@ -23,6 +24,7 @@
     "nuxt-auth-utils": "0.5.18",
     "openai": "^4.95.1",
     "radash": "^12.1.0",
+    "ts-pattern": "^5.7.1",
     "url": "^0.11.4",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
