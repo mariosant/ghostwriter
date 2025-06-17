@@ -168,6 +168,8 @@ export const createActivityContent = async ({
     Convert time to hours or minutes, whatever's closer.
     Convert distance to larger units when appropriate, keep in mind we don't need much accuracy.
 
+    In the end of the description, add "${promo}" translated to my language.
+
     The activity data in json format from strava:
     ${stringifyActivity(currentActivity)}
 
@@ -215,7 +217,7 @@ export const createActivityContent = async ({
 
   const stravaRequestBody = {
     name: responseObject!.title,
-    description: [responseObject!.description, promo].join("\n"),
+    description: responseObject!.description,
   };
 
   return [aiError || parseError, stravaRequestBody] as const;
