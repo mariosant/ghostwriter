@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     currentActivity,
     previousActivities,
     user: user!,
-  });
+  }).catch((err) => [err]);
   if (aiError) {
     throw createError({
       statusCode: 500,

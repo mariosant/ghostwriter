@@ -51,44 +51,9 @@ const staticActivityTypes = [
   "Golf",
 ];
 
-const stringifyActivity = chain<[Activity], Activity, string>(
-  (activity) => {
-    if (movingActivityTypes.includes(activity.sport_type)) {
-      return omit(activity, [
-        "laps",
-        "splits_metric",
-        "splits_standard",
-        "hide_from_home",
-        "available_zones",
-        "map",
-        "start_date_local",
-        "gear",
-        "stats_visibility",
-        "embed_token",
-        "name",
-        "description",
-      ]);
-    }
-
-    if (staticActivityTypes.includes(activity.sport_type)) {
-      return omit(activity, [
-        "laps",
-        "splits_metric",
-        "splits_standard",
-        "hide_from_home",
-        "available_zones",
-        "map",
-        "start_date_local",
-        "gear",
-        "stats_visibility",
-        "embed_token",
-        "name",
-        "description",
-        "distance",
-      ]);
-    }
-
-    return omit(activity, [
+const stringifyActivity = chain(
+  ({ activity, shouldKeepNames = false }) => {
+    const baseFieldsToOmit = [
       "laps",
       "splits_metric",
       "splits_standard",
@@ -99,9 +64,19 @@ const stringifyActivity = chain<[Activity], Activity, string>(
       "gear",
       "stats_visibility",
       "embed_token",
-      "name",
-      "description",
-    ]);
+    ];
+
+    const nameFields = shouldKeepNames ? [] : ["name", "description"];
+
+    if (movingActivityTypes.includes(activity.type)) {
+      return omit(activity, [...baseFieldsToOmit, ...nameFields]);
+    }
+
+    if (staticActivityTypes.includes(activity.type)) {
+      return omit(activity, [...baseFieldsToOmit, ...nameFields, "distance"]);
+    }
+
+    return omit(activity, [...baseFieldsToOmit, ...nameFields]);
   },
   (activity) => JSON.stringify(activity),
 );
@@ -128,8 +103,9 @@ export const createActivityContent = async ({
     .when(
       ({ highlight, activity }) =>
         highlight === "Area Exploration" &&
-        movingActivityTypes.includes(get(activity, "sport_type")),
-      () => "Highlight places visited and areas explored.",
+        movingActivityTypes.includes(get(activity, "type")),
+      () =>
+        "Focus on places visited and areas explored. Highlight any previous or new visits.",
     )
     .with(
       { highlight: "Athletic" },
@@ -137,13 +113,9 @@ export const createActivityContent = async ({
         "Highlight athletic properties and performance. Highlight PR's as well but only if available.",
     )
     .with(
-      { highlight: "Social" },
-      () =>
-        "Highlight social properties such as friend participation and activities.",
-    )
-    .with(
       { highlight: "Mood" },
-      () => "Highlight how mood was swinging through the activity.",
+      () =>
+        "Focus on how mood was swinging through the activity, ie I was feeling exhausted because of climb, I was feeling super happy on that descent!",
     )
     .with({ highlight: "Conditions" }, () => "Highlight on weather conditions");
 
@@ -153,7 +125,7 @@ export const createActivityContent = async ({
 
   const prompt = `
     Generate a short title and a ${length}-lengthed description for my strava activity. Use my preferred language and unit system.
-    Try to not exaggerate as I am using Strava often and I want my activites to be unique and easy to read. Don't say things like nothing too fancy or wild.
+    Try to not exaggerate as I am using Strava often and I want my activites to be unique and easy to read. Don't use repeative language.
     Use a little bit of ${tone} tone to make things less boring.
     ${highlightInstructions}
     Maybe comment if any interesting fact in comparison to previous activities.
@@ -171,10 +143,10 @@ export const createActivityContent = async ({
     In the end of the description, add "${promo}" translated to my language.
 
     The activity data in json format from strava:
-    ${stringifyActivity(currentActivity)}
+    ${stringifyActivity({ activity: currentActivity })}
 
     The recent previous activities in json format:
-    ${previousActivities.map((a) => pick(a, ["distance", "moving_time", "total_elavation_gain", "type", "start_date", "average_speed", "average_watts", "average_heartrate", "max_heartrate"])).map(stringifyActivity)}
+    ${previousActivities.map((activity) => stringifyActivity({ activity, shouldKeepNames: true }))}
   `;
 
   const [aiError, aiResponse] = await openai("/responses", {
