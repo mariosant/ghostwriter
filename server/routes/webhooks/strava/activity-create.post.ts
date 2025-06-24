@@ -20,7 +20,11 @@ export default defineEventHandler(async (event) => {
   const strava = await useStrava(body.owner_id);
 
   const currentActivity = await strava!<any>(`/activities/${body.object_id}`);
-  const [, ...previousActivities] = await strava!<any[]>(`/activities`);
+  const [, ...previousActivities] = await strava!<any[]>(`/activities`, {
+    query: {
+      per_page: 20,
+    },
+  });
 
   const [aiError, stravaRequestBody] = await createActivityContent({
     currentActivity,
