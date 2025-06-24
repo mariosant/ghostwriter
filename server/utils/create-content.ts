@@ -117,7 +117,8 @@ export const createActivityContent = async ({
       () =>
         "Focus on how mood was swinging through the activity, ie I was feeling exhausted because of climb, I was feeling super happy on that descent!",
     )
-    .with({ highlight: "Conditions" }, () => "Highlight on weather conditions");
+    .with({ highlight: "Conditions" }, () => "Highlight on weather conditions")
+    .otherwise(() => "");
 
   const length = match({ tone })
     .with({ tone: "Minimalist" }, () => "short")
@@ -146,7 +147,7 @@ export const createActivityContent = async ({
     ${stringifyActivity({ activity: currentActivity })}
 
     The recent previous activities in json format:
-    ${previousActivities.map((activity) => stringifyActivity({ activity, shouldKeepNames: true }))}
+    [${previousActivities.map((activity) => stringifyActivity({ activity, shouldKeepNames: true }))}]
   `;
 
   const [aiError, aiResponse] = await openai("/responses", {
