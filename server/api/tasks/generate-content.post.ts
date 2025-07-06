@@ -1,7 +1,10 @@
+import { get } from "radash";
 import { createActivityContent } from "~~/server/utils/create-content";
 
 export default defineEventHandler(async (event) => {
   await validateHookdeck(event);
+
+  const posthog = event.context.posthog;
 
   const body = await readBody(event);
   const db = useDrizzle();
@@ -40,11 +43,33 @@ export default defineEventHandler(async (event) => {
 
   await strava!(`activities/${body.object_id}`, {
     method: "PUT",
-    body: stravaRequestBody,
+    body: {
+      name: stravaRequestBody.name,
+      description: stravaRequestBody.description,
+    },
   }).catch((error) => {
     throw createError({
       statusCode: 500,
       message: `Strava API: ${error.message}`,
     });
+  });
+
+  posthog.identify({
+    distinctId: String(user.id),
+    properties: {
+      name: user.name,
+      country: user.country,
+    },
+  });
+
+  posthog.capture({
+    distinctId: String(user.id),
+    event: "content generated",
+    properties: {
+      activity: currentActivity.id,
+      activityType: get(currentActivity, "sport_type", "unknown"),
+      highlight: stravaRequestBody.meta.highlight,
+      tone: stravaRequestBody.meta.tone,
+    },
   });
 });

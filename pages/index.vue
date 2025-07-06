@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { trackEvent } from "@aptabase/web";
-
 useHead({ title: "Ghostwriter" });
 
 const { user } = useUserSession();
@@ -39,10 +37,6 @@ onMounted(() => {
 const saveOp = watchPausable(
   preferences,
   async (newData) => {
-    trackEvent("update_preferences", {
-      enabled: newData.enabled,
-    });
-
     await $fetch("/api/preferences", {
       method: "PUT",
       body: toValue(preferences),

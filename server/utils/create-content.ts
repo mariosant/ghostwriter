@@ -1,4 +1,4 @@
-import { chain, draw, get, isEmpty, omit, pick, tryit } from "radash";
+import { chain, draw, get, isEmpty, omit, tryit } from "radash";
 import { safeDestr } from "destr";
 import { match } from "ts-pattern";
 import { User } from "./drizzle";
@@ -191,6 +191,10 @@ export const createActivityContent = async ({
   const stravaRequestBody = {
     name: responseObject!.title,
     description: responseObject!.description,
+    meta: {
+      highlight,
+      tone,
+    },
   };
 
   return [aiError || parseError, stravaRequestBody] as const;

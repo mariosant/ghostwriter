@@ -24,6 +24,8 @@ export default defineOAuthStravaEventHandler({
       });
     }
 
+    const posthog = event.context.posthog;
+
     const userPayload = {
       id: auth.user.id,
       name: `${auth.user.firstname} ${auth.user.lastname}`,
@@ -78,6 +80,19 @@ export default defineOAuthStravaEventHandler({
 
     await setUserSession(event, {
       user: userPayload,
+    });
+
+    posthog.identify({
+      distinctId: String(user!.id),
+      properties: {
+        name: user!.name,
+        country: user!.country,
+      },
+    });
+
+    posthog.capture({
+      distinctId: String(user!.id),
+      event: "user logged in",
     });
 
     sendRedirect(event, "/");

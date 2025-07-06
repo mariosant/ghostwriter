@@ -15,7 +15,9 @@ export default defineNuxtConfig({
     openaiApiKey: "",
     databaseUrl: "",
     public: {
-      aptabaseAppKey: "",
+      posthogPublicKey: "",
+      posthogHost: "",
+      posthogDefaults: "2025-05-24",
     },
   },
   future: { compatibilityVersion: 4 },
