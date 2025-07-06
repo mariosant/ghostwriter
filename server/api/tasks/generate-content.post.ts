@@ -54,15 +54,7 @@ export default defineEventHandler(async (event) => {
     });
   });
 
-  posthog.identify({
-    distinctId: String(user.id),
-    properties: {
-      name: user.name,
-      country: user.country,
-    },
-  });
-
-  posthog.capture({
+  posthog.captureImmediate({
     distinctId: String(user.id),
     event: "content generated",
     properties: {

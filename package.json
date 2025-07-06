@@ -16,6 +16,7 @@
     "@nuxt/image": "^1.10.0",
     "@nuxt/ui": "3.0.2",
     "@vee-validate/nuxt": "^4.15.0",
+    "@vercel/functions": "^2.2.3",
     "@vueuse/nuxt": "^13.0.0",
     "destr": "^2.0.5",
     "drizzle-orm": "^0.41.0",

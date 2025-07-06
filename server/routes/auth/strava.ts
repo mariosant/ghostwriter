@@ -82,7 +82,7 @@ export default defineOAuthStravaEventHandler({
       user: userPayload,
     });
 
-    posthog.identify({
+    posthog.identifyImmediate({
       distinctId: String(user!.id),
       properties: {
         name: user!.name,
@@ -90,7 +90,7 @@ export default defineOAuthStravaEventHandler({
       },
     });
 
-    posthog.capture({
+    posthog.captureImmediate({
       distinctId: String(user!.id),
       event: "user logged in",
     });

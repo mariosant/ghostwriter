@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  posthog.identify({
+  posthog.identifyImmediate({
     distinctId: String(user!.id),
     properties: {
       name: user!.name,
@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
     .delete(tables.users)
     .where(eq(tables.users.id, get(body, "object_id")));
 
-  posthog.capture({
+  posthog.captureImmediate({
     distinctId: get(body, "object_id"),
     event: "user deleted",
   });
