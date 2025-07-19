@@ -150,32 +150,25 @@ export const createActivityContent = async ({
     [${previousActivities.map((activity) => stringifyActivity({ activity, shouldKeepNames: true }))}]
   `;
 
-  const [aiError, aiResponse] = await openai("/responses", {
-    body: {
-      model: "gpt-4.1",
-      input: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      text: {
-        format: {
-          type: "json_schema",
-          name: "activity",
-          schema: {
-            type: "object",
-            properties: {
-              title: {
-                type: "string",
-              },
-              description: {
-                type: "string",
-              },
+  const aiResponse = await openai.responses.create({
+    model: "gpt-4o-mini",
+    input: [{ role: "user", content: prompt }],
+    text: {
+      format: {
+        type: "json_schema",
+        name: "activity",
+        schema: {
+          type: "object",
+          properties: {
+            title: {
+              type: "string",
             },
-            required: ["title", "description"],
-            additionalProperties: false,
+            description: {
+              type: "string",
+            },
           },
+          required: ["title", "description"],
+          additionalProperties: false,
         },
       },
     },
@@ -183,7 +176,7 @@ export const createActivityContent = async ({
 
   const [parseError, responseObject] = tryit(
     chain(
-      (r) => get(r, "output.0.content.0.text"),
+      (r) => get(r, "output_text"),
       (r) => safeDestr<{ title: string; description: string }>(r),
     ),
   )(aiResponse);
@@ -197,5 +190,5 @@ export const createActivityContent = async ({
     },
   };
 
-  return [aiError || parseError, stravaRequestBody] as const;
+  return [parseError, stravaRequestBody] as const;
 };

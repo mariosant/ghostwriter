@@ -1,15 +1,11 @@
-import { tryit } from "radash";
+import OpenAI from "openai";
 
 export const useOpenAI = () => {
   const config = useRuntimeConfig();
 
-  const client = $fetch.create({
-    baseURL: "https://api.openai.com/v1",
-    headers: {
-      Authorization: `Bearer ${config.openaiApiKey}`,
-    },
-    method: "post",
+  const client = new OpenAI({
+    apiKey: config.openaiApiKey,
   });
 
-  return tryit(client);
+  return client;
 };
