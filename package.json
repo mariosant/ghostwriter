@@ -22,7 +22,7 @@
     "drizzle-orm": "^0.41.0",
     "nuxt": "^3.16.2",
     "nuxt-auth-utils": "0.5.18",
-    "openai": "^4.104.0",
+    "openai": "^5.12.2",
     "posthog-js": "^1.256.2",
     "posthog-node": "^5.1.1",
     "radash": "^12.1.0",

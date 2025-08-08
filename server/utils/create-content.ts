@@ -151,7 +151,7 @@ export const createActivityContent = async ({
   `;
 
   const aiResponse = await openai.responses.create({
-    model: "gpt-4o-mini",
+    model: "gpt-5-mini",
     input: [{ role: "user", content: prompt }],
     text: {
       format: {
