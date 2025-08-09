@@ -126,7 +126,7 @@ export const createActivityContent = async ({
 
   const prompt = `
     Generate a short title and a ${length}-lengthed description for my strava activity. Use my preferred language and unit system.
-    Try to not exaggerate as I am using Strava often and I want my activites to be unique and easy to read. Don't use repeative language.
+    Use first person, as this will be posting for myself. Try to not exaggerate as I am using Strava often and I want my activites to be unique and easy to read. Don't use repeative language.
     Use a little bit of ${tone} tone to make things less boring.
     ${highlightInstructions}
     Maybe comment if any interesting fact in comparison to previous activities.
@@ -139,7 +139,7 @@ export const createActivityContent = async ({
     Activity notes:
     Distance is in meters, time is in seconds, don't include average speed.
     Convert time to hours or minutes, whatever's closer.
-    Convert distance to larger units when appropriate, keep in mind we don't need much accuracy.
+    Convert distance to larger units when appropriate, we don't need accuracy. Better say almost 50 instead of 48.67 for example.
 
     In the end of the description, add "${promo}" translated to my language.
 
