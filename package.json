@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@formkit/tempo": "^0.1.2",
-    "@google/genai": "^1.13.0",
     "@neondatabase/serverless": "^1.0.1",
     "@nuxt/icon": "1.15.0",
     "@nuxt/image": "^1.11.0",
