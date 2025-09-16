@@ -99,26 +99,6 @@ export const createActivityContent = async ({
   const highlight = isEmpty(user.preferences.data?.highlights)
     ? (draw(availableHighlights) as string)
     : draw(user.preferences.data!.highlights!);
-  const highlightInstructions = match({ highlight, activity: currentActivity })
-    .when(
-      ({ highlight, activity }) =>
-        highlight === "Area Exploration" &&
-        movingActivityTypes.includes(get(activity, "type")),
-      () =>
-        "Focus on places visited and areas explored. Highlight any previous or new visits.",
-    )
-    .with(
-      { highlight: "Athletic" },
-      () =>
-        "Highlight athletic properties and performance. Highlight PR's as well but only if available.",
-    )
-    .with(
-      { highlight: "Mood" },
-      () =>
-        "Focus on how mood was swinging through the activity, ie I was feeling exhausted because of climb, I was feeling super happy on that descent!",
-    )
-    .with({ highlight: "Conditions" }, () => "Highlight on weather conditions")
-    .otherwise(() => "");
 
   const length = match({ tone })
     .with({ tone: "Minimalist" }, () => "short")
@@ -127,11 +107,17 @@ export const createActivityContent = async ({
   const prompt = `
     Generate a short title and a ${length}-lengthed description for my strava activity. Use my preferred language and unit system.
     Use first person, as this will be posting for myself. Try to not exaggerate as I am using Strava often and I want my activites to be unique and easy to read. Don't use repeative language.
-    Use a little bit of ${tone} tone to make things less boring.
-    ${highlightInstructions}
+
+    Depending the activity conditions and achievements, use one of the following tones to make things less boring:
+    ${availableTones.join(", ")}. Accordingly, depending on the activity's conditions, highlight area exploration, athletic achievements, mood swings or weather conditions.
+    If there is nothing interesting to say, try making a mild joke or say an interesting fact about the route.
+
+    Take heart data, suffer score and weather into consideration if available, combine them to understand the effort.
+
     Maybe comment if any interesting fact in comparison to previous activities.
 
-    Add #${tone} and #${highlight} at the end of the description. Depending the length of the description, maybe add more hashtags.
+    NEVER use em dash symbol.
+    Depending the length of the description, maybe add hashtags.
 
     Language: ${user?.preferences.data!.language}
     Unit system: ${user?.preferences.data!.units}
@@ -151,8 +137,11 @@ export const createActivityContent = async ({
   `;
 
   const aiResponse = await openai.responses.create({
-    model: "gpt-5-mini",
+    model: "gpt-5",
     input: [{ role: "user", content: prompt }],
+    reasoning: {
+      effort: "minimal",
+    },
     text: {
       format: {
         type: "json_schema",
@@ -184,10 +173,6 @@ export const createActivityContent = async ({
   const stravaRequestBody = {
     name: responseObject!.title,
     description: responseObject!.description,
-    meta: {
-      highlight,
-      tone,
-    },
   };
 
   return [parseError, stravaRequestBody] as const;
