@@ -110,13 +110,13 @@ export const createActivityContent = async ({
 
     Depending the activity conditions and achievements, use one of the following tones to make things less boring:
     ${availableTones.join(", ")}. Accordingly, depending on the activity's conditions, highlight area exploration, athletic achievements, mood swings or weather conditions.
-    If there is nothing interesting to say, try making a mild joke or say an interesting fact about the route.
+    If there is nothing interesting to say, try making a mild joke or say an interesting fact about the route. Do not add fun facts if mentioned in the recent activities.
 
-    Take heart data, suffer score and weather into consideration if available, combine them to understand the effort.
+    Take heart data, suffer score and weather into consideration if available, combine them to understand the effort. No need to mention suffer score every time.
 
     Maybe comment if any interesting fact in comparison to previous activities.
 
-    NEVER use em dash symbol.
+    NEVER use — symbol. Not for titles, not for descriptions.
     Depending the length of the description, maybe add hashtags.
 
     Language: ${user?.preferences.data!.language}
